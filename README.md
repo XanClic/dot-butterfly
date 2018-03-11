@@ -4,9 +4,10 @@
 How to use
 ----------
 
-This repository contains the sources for `~/.butterfly` (related: my “butterfly”
-repository).  To make use of them, simply clone the repo, execute `make` in its
-root directory, and link the resulting `build` to `~/.butterfly`.
+This repository contains the sources for `~/.butterfly` (related:
+[my “butterfly” repository](https://github.com/XanClic/butterfly)).  To make
+use of them, simply clone the repo, execute `make` in its root directory, and
+link the resulting `build` to `~/.butterfly`.
 
 What there is
 -------------
