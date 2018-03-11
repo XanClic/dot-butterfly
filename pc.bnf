@@ -1,0 +1,58 @@
+STATEMENT := assignment ';'
+STATEMENT := function_call ';'
+
+assignment := IDENTIFIER ':=' rhs
+
+rhs := add
+rhs := sub
+rhs := and
+rhs := left_hand_rhs
+rhs := paren_rhs
+
+paren_rhs := '(' rhs ')'
+
+add := left_hand_rhs '+' rhs
+sub := left_hand_rhs '-' rhs
+and := left_hand_rhs '&' rhs
+
+left_hand_rhs := paren_rhs
+left_hand_rhs := constant
+left_hand_rhs := function_call
+left_hand_rhs := IDENTIFIER
+
+constant := ICONSTANT
+constant := FCONSTANT
+constant := SCONSTANT
+
+function_call := IDENTIFIER '(' ')'
+function_call := IDENTIFIER '(' function_call_parameters ')'
+
+function_call_parameters := rhs ',' function_call_parameters
+function_call_parameters := rhs
+
+condition_ge := rhs '>=' rhs
+condition_gt := rhs '>'  rhs
+condition_le := rhs '<=' rhs
+condition_lt := rhs '<'  rhs
+condition_eq := rhs '==' rhs
+condition_ne := rhs '!=' rhs
+
+condition := condition_ge
+condition := condition_gt
+condition := condition_le
+condition := condition_lt
+condition := condition_eq
+condition := condition_ne
+condition := rhs
+
+PRE_BLOCK := pre_block_if
+PRE_BLOCK := pre_block_while
+
+pre_block_if := 'if' condition BLOCK MERGE_BLOCK
+pre_block_while := 'while' condition BLOCK
+
+PRE_MERGE_BLOCK := pre_merge_block_elsif
+PRE_MERGE_BLOCK := pre_merge_block_else
+
+pre_merge_block_elsif := 'elsif' condition BLOCK MERGE_BLOCK
+pre_merge_block_else := 'else' BLOCK

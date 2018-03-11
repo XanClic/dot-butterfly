@@ -1,0 +1,11 @@
+{
+  "files": {},
+  "structs": {
+    "scalars": {
+      "path": "structs/scalars.struct"
+    },
+    "qcow2": {
+      "path": "structs/qcow2.struct"
+    }
+  }
+}
