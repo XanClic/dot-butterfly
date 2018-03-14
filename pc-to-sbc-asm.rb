@@ -85,6 +85,8 @@ def syntax_apply_statement(desc, symbol, statement)
         return [['BLOCK'], statement]
     elsif symbol == 'MERGE_BLOCK'
         return [['MERGE_BLOCK'], statement]
+    elsif symbol == 'NO_MERGE_BLOCK'
+        return [['NO_MERGE_BLOCK'], statement]
     end
 
     if !desc[symbol]
@@ -126,7 +128,7 @@ def syntax_apply_statement(desc, symbol, statement)
     return nil
 end
 
-def do_fill_in_block(tree, symbol, block, depth)
+def do_fill_in_block(tree, symbol, abort_symbol, block, depth)
     can_go_deeper = false
 
     if depth == 0
@@ -135,6 +137,8 @@ def do_fill_in_block(tree, symbol, block, depth)
                 if subtree[0] == symbol && subtree.length == 1
                     subtree[1] = block
                     return :found
+                elsif subtree[0] == abort_symbol && subtree.length == 1
+                    return :aborted
                 else
                     can_go_deeper = true
                 end
@@ -145,9 +149,12 @@ def do_fill_in_block(tree, symbol, block, depth)
 
         tree.each do |subtree|
             if subtree.kind_of?(Array)
-                case do_fill_in_block(subtree, symbol, block, depth - 1)
+                case do_fill_in_block(subtree, symbol, abort_symbol, block,
+                                      depth - 1)
                 when :found
                     return :found
+                when :aborted
+                    return :aborted
                 when :go_deeper
                     can_go_deeper = true
                 end
@@ -162,13 +169,15 @@ def do_fill_in_block(tree, symbol, block, depth)
     end
 end
 
-def fill_in_block(tree, symbol, block)
+def fill_in_block(tree, symbol, abort_symbol, block)
     depth = 0
 
     while true
-        case do_fill_in_block(tree, symbol, block, depth)
+        case do_fill_in_block(tree, symbol, abort_symbol, block, depth)
         when :found
             return true
+        when :aborted
+            return false
         when :go_deeper
             depth += 1
         when :nothing_left
@@ -211,12 +220,14 @@ def syntax_apply(desc, pp_src)
             if !block
                 die("Syntax error in block after: #{line}")
             end
-            if !fill_in_block(subtree, 'BLOCK', block)
+            if !fill_in_block(subtree, 'BLOCK', nil, block)
                 die("Could not find BLOCK rule for: #{line}")
             end
             if merge_block
-                if !fill_in_block(tree[-1], 'MERGE_BLOCK', subtree)
-                    die("Could not find MERGE_BLOCK rule before: #{line}")
+                if !fill_in_block(tree[-1], 'MERGE_BLOCK', 'NO_MERGE_BLOCK',
+                                  subtree)
+                    die("Could not find (applicable) MERGE_BLOCK rule " +
+                        "before: #{line}")
                 end
             else
                 tree << subtree

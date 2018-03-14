@@ -49,10 +49,10 @@ PRE_BLOCK := pre_block_if
 PRE_BLOCK := pre_block_while
 
 pre_block_if := 'if' condition BLOCK MERGE_BLOCK
-pre_block_while := 'while' condition BLOCK
+pre_block_while := 'while' condition BLOCK NO_MERGE_BLOCK
 
 PRE_MERGE_BLOCK := pre_merge_block_elsif
 PRE_MERGE_BLOCK := pre_merge_block_else
 
 pre_merge_block_elsif := 'elsif' condition BLOCK MERGE_BLOCK
-pre_merge_block_else := 'else' BLOCK
+pre_merge_block_else := 'else' BLOCK NO_MERGE_BLOCK
