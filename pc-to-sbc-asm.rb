@@ -126,21 +126,55 @@ def syntax_apply_statement(desc, symbol, statement)
     return nil
 end
 
-def fill_in_block(tree, symbol, block)
-    tree.each do |subtree|
-        if subtree[0] == symbol && subtree.length == 1
-            subtree[1] = block
-            return true
+def do_fill_in_block(tree, symbol, block, depth)
+    can_go_deeper = false
+
+    if depth == 0
+        tree.each do |subtree|
+            if subtree.kind_of?(Array)
+                if subtree[0] == symbol && subtree.length == 1
+                    subtree[1] = block
+                    return :found
+                else
+                    can_go_deeper = true
+                end
+            end
         end
-    end
-    tree.each do |subtree|
-        if subtree.kind_of?(Array)
-            if fill_in_block(subtree, symbol, block)
-                return true
+    else
+        can_go_deeper = false
+
+        tree.each do |subtree|
+            if subtree.kind_of?(Array)
+                case do_fill_in_block(subtree, symbol, block, depth - 1)
+                when :found
+                    return :found
+                when :go_deeper
+                    can_go_deeper = true
+                end
             end
         end
     end
-    return false
+
+    if can_go_deeper
+        return :go_deeper
+    else
+        return :nothing_left
+    end
+end
+
+def fill_in_block(tree, symbol, block)
+    depth = 0
+
+    while true
+        case do_fill_in_block(tree, symbol, block, depth)
+        when :found
+            return true
+        when :go_deeper
+            depth += 1
+        when :nothing_left
+            return false
+        end
+    end
 end
 
 def syntax_apply(desc, pp_src)
