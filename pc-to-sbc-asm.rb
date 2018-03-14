@@ -236,19 +236,19 @@ def transform_function(name, params)
         end
         params[0] + params[1] + [name]
     when 'osi', 'osu'
-        if params.length != 4
-            die("Invalid usage: #{name}(base: integer constant, name: string, data: integer, position: integer)")
+        if params.length != 5
+            die("Invalid usage: #{name}(base: integer constant, name: string, data: integer, position: integer, length: integer)")
         end
         if params[0].length != 1 || !params[0][0].start_with?('lic ')
-            die("Invalid usage: #{name}(base: integer constant, name: string, data: integer, position: integer)")
+            die("Invalid usage: #{name}(base: integer constant, name: string, data: integer, position: integer, length: integer)")
         end
         base = Integer(params[0][0][3..-1].strip)
-        params[3] + params[2] + params[1] + [name + ' ' + base.to_s]
+        params[3] + params[4] + params[2] + params[1] + [name + ' ' + base.to_s]
     when 'oss'
-        if params.length != 3
-            die("Invalid usage: #{name}(name: string, data: string, position: integer)")
+        if params.length != 4
+            die("Invalid usage: #{name}(name: string, data: string, position: integer, length: integer)")
         end
-        params[2] + params[1] + params[0] + [name]
+        params[2] + params[3] + params[1] + params[0] + [name]
     when 'f2le', 'f2be'
         if params.length != 0
             die("Invalid usage: #{name}()")

@@ -1,26 +1,26 @@
 if oh0("Bytes") {
-    osu(10, "u8", flu8(_LOC), _LOC);
-    osi(10, "i8", fli8(_LOC), _LOC);
+    osu(10, "u8", flu8(_LOC), _LOC, 1);
+    osi(10, "i8", fli8(_LOC), _LOC, 1);
 }
 
 if oh0("Little Endian") {
     f2le();
 
-    osu(16, "u16", flu16(_LOC), _LOC);
-    osi(10, "i16", fli16(_LOC), _LOC);
-    osu(16, "u32", flu32(_LOC), _LOC);
-    osi(10, "i32", fli32(_LOC), _LOC);
-    osu(16, "u64", flu64(_LOC), _LOC);
-    osi(10, "i64", fli64(_LOC), _LOC);
+    osu(16, "u16", flu16(_LOC), _LOC, 2);
+    osi(10, "i16", fli16(_LOC), _LOC, 2);
+    osu(16, "u32", flu32(_LOC), _LOC, 4);
+    osi(10, "i32", fli32(_LOC), _LOC, 4);
+    osu(16, "u64", flu64(_LOC), _LOC, 8);
+    osi(10, "i64", fli64(_LOC), _LOC, 8);
 }
 
 if oh0("Big Endian") {
     f2be();
 
-    osu(16, "u16", flu16(_LOC), _LOC);
-    osi(10, "i16", fli16(_LOC), _LOC);
-    osu(16, "u32", flu32(_LOC), _LOC);
-    osi(10, "i32", fli32(_LOC), _LOC);
-    osu(16, "u64", flu64(_LOC), _LOC);
-    osi(10, "i64", fli64(_LOC), _LOC);
+    osu(16, "u16", flu16(_LOC), _LOC, 2);
+    osi(10, "i16", fli16(_LOC), _LOC, 2);
+    osu(16, "u32", flu32(_LOC), _LOC, 4);
+    osi(10, "i32", fli32(_LOC), _LOC, 4);
+    osu(16, "u64", flu64(_LOC), _LOC, 8);
+    osi(10, "i64", fli64(_LOC), _LOC, 8);
 }

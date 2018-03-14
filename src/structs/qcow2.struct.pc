@@ -1,48 +1,48 @@
 f2be();
 
 if oh0("Header") {
-    oss("magic", flsasciisized(0x00, 3), 0x00);
-    osu(16, "magic2", flu8(0x03), 0x03);
+    oss("magic", flsasciisized(0x00, 3), 0x00, 3);
+    osu(16, "magic2", flu8(0x03), 0x03, 1);
 
     version := flu32(0x04);
-    osu(10, "version", version, 0x04);
+    osu(10, "version", version, 0x04, 4);
 
     backing_file_offset := flu64(0x08);
     backing_file_size := flu32(0x10);
-    osu(16, "backing_file_offset", backing_file_offset, 0x08);
-    osu(10, "backing_file_size", backing_file_size, 0x10);
+    osu(16, "backing_file_offset", backing_file_offset, 0x08, 8);
+    osu(10, "backing_file_size", backing_file_size, 0x10, 4);
 
-    osu(10, "cluster_bits", flu32(0x14), 0x14);
-    osu(10, "size", flu64(0x18), 0x18);
-    osu(10, "crypt_method", flu32(0x20), 0x20);
+    osu(10, "cluster_bits", flu32(0x14), 0x14, 4);
+    osu(10, "size", flu64(0x18), 0x18, 8);
+    osu(10, "crypt_method", flu32(0x20), 0x20, 4);
 
     l1_entries := flu32(0x24);
     l1_table_offset := flu64(0x28);
-    osu(16, "l1_entries", l1_entries, 0x24);
-    osu(16, "l1_table_offset", l1_table_offset, 0x28);
+    osu(16, "l1_entries", l1_entries, 0x24, 4);
+    osu(16, "l1_table_offset", l1_table_offset, 0x28, 8);
 
     refcount_table_offset := flu64(0x30);
     refcount_table_clusters := flu32(0x38);
-    osu(16, "refcount_table_offset", refcount_table_offset, 0x30);
-    osu(16, "refcount_table_clusters", refcount_table_clusters, 0x38);
+    osu(16, "refcount_table_offset", refcount_table_offset, 0x30, 8);
+    osu(16, "refcount_table_clusters", refcount_table_clusters, 0x38, 4);
 
     nb_snapshots := flu32(0x3c);
     snapshots_offset := flu64(0x40);
-    osu(10, "nb_snapshots", nb_snapshots, 0x3c);
-    osu(16, "snapshots_offset", snapshots_offset, 0x40);
+    osu(10, "nb_snapshots", nb_snapshots, 0x3c, 4);
+    osu(16, "snapshots_offset", snapshots_offset, 0x40, 8);
 
     refcount_order := 4;
 
     if version >= 3 {
-        osu(2, "incompatible_features", flu64(0x48), 0x48);
-        osu(2, "compatible_features", flu64(0x50), 0x50);
-        osu(2, "autoclear_features", flu64(0x58), 0x58);
+        osu(2, "incompatible_features", flu64(0x48), 0x48, 8);
+        osu(2, "compatible_features", flu64(0x50), 0x50, 8);
+        osu(2, "autoclear_features", flu64(0x58), 0x58, 8);
 
         refcount_order := flu32(0x60);
-        osu(10, "refcount_order", refcount_order, 0x60);
+        osu(10, "refcount_order", refcount_order, 0x60, 4);
 
         header_ext_pos := flu32(0x64);
-        osu(10, "header_length", header_ext_pos, 0x64);
+        osu(10, "header_length", header_ext_pos, 0x64, 4);
 
         header_ext_type := flu32(header_ext_pos);
         while header_ext_type {
@@ -52,7 +52,7 @@ if oh0("Header") {
                 if oh1("Backing file format") {
                     oss("format",
                         flsutf8sized(header_ext_pos + 8, header_ext_len),
-                        header_ext_pos + 8);
+                        header_ext_pos + 8, header_ext_len);
                 }
             } elsif header_ext_type == 0x6803f857 {
                 if oh1("Feature name table") {
@@ -62,24 +62,24 @@ if oh0("Header") {
                         if oh2("Feature") {
                             type := flu8(fnt_pos);
                             if type == 0 {
-                                oss("Type", "incompatible", fnt_pos);
+                                oss("Type", "incompatible", fnt_pos, 1);
                             } elsif type == 1 {
-                                oss("Type", "compatible", fnt_pos);
+                                oss("Type", "compatible", fnt_pos, 1);
                             } elsif type == 2 {
-                                oss("Type", "autoclear", fnt_pos);
+                                oss("Type", "autoclear", fnt_pos, 1);
                             } else {
-                                osu(10, "Type", type, fnt_pos);
+                                osu(10, "Type", type, fnt_pos, 1);
                             }
-                            osu(10, "Bit", flu8(fnt_pos + 1), fnt_pos + 1);
+                            osu(10, "Bit", flu8(fnt_pos + 1), fnt_pos + 1, 1);
                             oss("Name", flsutf8sized(fnt_pos + 2, 46),
-                                fnt_pos + 2);
+                                fnt_pos + 2, 46);
                         }
                         fnt_pos := fnt_pos + 0x30;
                     }
                 }
             } else {
                 osu(16, "Unknown header extension", header_ext_type,
-                    header_ext_pos);
+                    header_ext_pos, 4);
             }
 
             header_ext_pos := header_ext_pos +
@@ -92,7 +92,7 @@ if oh0("Header") {
         if oh1("Backing file") {
             oss("backing_file",
                 flsutf8sized(backing_file_offset, backing_file_size),
-                backing_file_offset);
+                backing_file_offset, backing_file_size);
         }
     }
 }
